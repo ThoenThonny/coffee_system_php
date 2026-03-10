@@ -35,7 +35,7 @@ body{
 
 <h3 class="text-center mb-4">Login Account</h3>
 
-<form action="login.php" method="POST">
+<form action="#" method="POST">
 
 <div class="mb-3">
 <label class="form-label">Email</label>

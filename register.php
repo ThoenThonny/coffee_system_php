@@ -6,62 +6,94 @@
 
 <title>Register</title>
 
-<!-- Bootstrap 5 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
 body{
-    height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-.register-card{
-    width:400px;
-    border-radius:15px;
+.card{
+width:400px;
+border-radius:15px;
 }
 </style>
 
 </head>
 <body>
 
-<div class="card register-card shadow-lg">
+<div class="card shadow-lg">
 <div class="card-body p-4">
 
-<h3 class="text-center mb-4">Create Account</h3>
-
-<form action="register.php" method="POST">
+<h3 class="text-center mb-4">Register</h3>
 
 <div class="mb-3">
-<label class="form-label">Username</label>
-<input type="text" name="user_name" class="form-control" placeholder="Enter username" required>
+<label>Username</label>
+<input type="text" id="name" class="form-control">
 </div>
 
 <div class="mb-3">
-<label class="form-label">Email</label>
-<input type="email" name="user_email" class="form-control" placeholder="Enter email" required>
+<label>Email</label>
+<input type="email" id="email" class="form-control">
 </div>
 
 <div class="mb-3">
-<label class="form-label">Password</label>
-<input type="password" name="user_password" class="form-control" placeholder="Enter password" required>
+<label>Password</label>
+<input type="password" id="password" class="form-control">
 </div>
 
-
-<button type="submit" class="btn btn-primary w-100">
+<button onclick="Register()" class="btn btn-primary w-100">
 Register
 </button>
 
 <div class="text-center mt-3">
-Already have account? 
+Already have account ?
 <a href="index.php">Login</a>
 </div>
-
-</form>
 
 </div>
 </div>
 
 </body>
+
+<script>
+
+function Register(){
+
+let name = document.getElementById("name").value;
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
+
+fetch("auth/register.php",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+user_name:name,
+user_email:email,
+user_password:password
+})
+})
+.then(res=>res.json())
+.then(data=>{
+
+console.log(data);
+
+if(data.status === "success"){
+alert("Register Success");
+window.location="index.php";
+}else{
+alert("Register Failed");
+}
+
+});
+
+}
+
+</script>
+
 </html>
