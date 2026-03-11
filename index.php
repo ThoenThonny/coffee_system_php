@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,72 +6,95 @@
 
 <title>Login</title>
 
-<!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-
 body{
-    
-    height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-.login-card{
-    width:380px;
-    border-radius:15px;
+.card{
+width:400px;
+border-radius:15px;
 }
-
 </style>
 
 </head>
 <body>
 
-<div class="card login-card shadow-lg">
+<div class="card shadow-lg">
 <div class="card-body p-4">
 
-<h3 class="text-center mb-4">Login Account</h3>
-
-<form action="#" method="POST">
+<h3 class="text-center mb-4">Login</h3>
 
 <div class="mb-3">
-<label class="form-label">Email</label>
-<input 
-type="email" 
-name="user_email" 
-class="form-control" 
-placeholder="Enter your email"
-required
->
+<label>Email</label>
+<input type="email" id="email" class="form-control">
 </div>
 
 <div class="mb-3">
-<label class="form-label">Password</label>
-<input 
-type="password" 
-name="user_password" 
-class="form-control" 
-placeholder="Enter your password"
-required
->
+<label>Password</label>
+<input type="password" id="password" class="form-control">
 </div>
 
-<button class="btn btn-primary w-100">
+<button onclick="Login()" class="btn btn-primary w-100">
 Login
 </button>
 
 <div class="text-center mt-3">
-Don't have an account?
+i don't have account ?
 <a href="register.php">Register</a>
 </div>
-
-</form>
 
 </div>
 </div>
 
 </body>
-</html>
+<script>
 
+function Login(){
+
+let email = document.getElementById("email").value;
+let password = document.getElementById("password").value;
+
+fetch("auth/login.php",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+user_email:email,
+user_password:password
+})
+})
+.then(res=>res.json())
+.then(data=>{
+
+console.log(data);
+
+if(data.status === "success"){
+
+alert(data.message);
+
+window.location="dashboad.php";
+
+}else{
+
+alert(data.message);
+
+}
+
+})
+.catch(error=>{
+console.log(error);
+alert("Server Error");
+});
+
+}
+
+</script>
+
+</html>
