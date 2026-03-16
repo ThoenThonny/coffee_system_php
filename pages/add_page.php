@@ -1,0 +1,294 @@
+<style>
+    :root {
+      --espresso: #1a0a00;
+      --roast:    #3b1f0a;
+      --caramel:  #c47a2b;
+      --cream:    #f5efe6;
+      --foam:     #fdfaf5;
+      --shadow:   rgba(60, 20, 0, 0.18);
+    }
+ 
+   
+ 
+    .form-card {
+      background: var(--foam);
+      border-radius: 20px;
+      padding: 2.8rem 2.5rem;
+      max-width: 820px;
+      width: 100%;
+      box-shadow: 0 24px 64px var(--shadow), 0 2px 8px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+ 
+    .form-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--caramel), #e8a04a, var(--caramel));
+    }
+ 
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      color: var(--roast);
+      font-size: 1.85rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      letter-spacing: -0.5px;
+    }
+ 
+    .form-subtitle {
+      color: #9e7a55;
+      font-size: 0.85rem;
+      font-weight: 300;
+      margin-bottom: 2rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+ 
+    .form-label {
+      font-weight: 500;
+      font-size: 0.8rem;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--roast);
+      margin-bottom: 0.4rem;
+    }
+ 
+    .form-control, .input-group .form-control {
+      background: var(--cream);
+      border: 1.5px solid #ddd0c3;
+      border-radius: 10px;
+      color: var(--espresso);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 0.65rem 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+ 
+    .form-control:focus {
+      border-color: var(--caramel);
+      box-shadow: 0 0 0 3px rgba(196,122,43,0.18);
+      background: #fff;
+      outline: none;
+    }
+ 
+    .form-control::placeholder { color: #bba98a; }
+ 
+    /* ID field — read-only style */
+    .form-control[readonly] {
+      background: #ece4da;
+      color: #9e7a55;
+      cursor: not-allowed;
+    }
+ 
+    /* Price prefix */
+    .input-group-text {
+      background: var(--caramel);
+      border: 1.5px solid var(--caramel);
+      border-radius: 10px 0 0 10px !important;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+ 
+    .input-group .form-control {
+      border-radius: 0 10px 10px 0 !important;
+    }
+ 
+    /* Image upload zone */
+    .upload-zone {
+      background: var(--cream);
+      border: 2px dashed #ddd0c3;
+      border-radius: 12px;
+      padding: 1.6rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+    }
+ 
+    .upload-zone:hover {
+      border-color: var(--caramel);
+      background: #fdf6ee;
+    }
+ 
+    .upload-zone input[type="file"] {
+      position: absolute; inset: 0;
+      opacity: 0; cursor: pointer;
+    }
+ 
+    .upload-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+ 
+    .upload-zone p {
+      margin: 0;
+      color: #9e7a55;
+      font-size: 0.85rem;
+    }
+ 
+    .upload-zone strong {
+      color: var(--caramel);
+    }
+ 
+    /* Preview */
+    #imagePreview {
+      display: none;
+      max-height: 220px;
+      border-radius: 8px;
+      margin-top: 0.8rem;
+      object-fit: cover;
+      width: 100%;
+    }
+ 
+    /* Buttons */
+    .btn-save {
+      background: linear-gradient(135deg, var(--caramel), #e8913a);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.95rem;
+      padding: 0.7rem 2rem;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 4px 16px rgba(196,122,43,0.35);
+    }
+ 
+    .btn-save:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      color: #fff;
+    }
+ 
+    .btn-reset {
+      background: transparent;
+      border: 1.5px solid #ddd0c3;
+      border-radius: 10px;
+      color: #9e7a55;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      padding: 0.7rem 1.5rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+ 
+    .btn-reset:hover {
+      border-color: var(--caramel);
+      color: var(--caramel);
+    }
+ 
+    .divider {
+      border: none;
+      border-top: 1.5px solid #ece4da;
+      margin: 1.8rem 0 1.5rem;
+    }
+ 
+    /* Floating bean decoration */
+    .bean-deco {
+      position: absolute;
+      width: 90px; height: 90px;
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      background: rgba(196,122,43,0.06);
+      bottom: -20px; right: -20px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+ 
+<section class="form-card mx-auto">
+  <div class="bean-deco"></div>
+ 
+  <h2 class="form-title">Coffee Product</h2>
+  <p class="form-subtitle">prd_coffee — Add New Entry</p>
+ 
+  <form method="post" id="coffeeForm" novalidate>
+ 
+ 
+    <!-- COF_NAME -->
+    <div class="mb-3">
+      <label class="form-label" for="cof_name">Coffee Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="cof_name"
+        name="cof_name"
+        placeholder="e.g. Ethiopian Yirgacheffe"
+        required
+      />
+      <div class="invalid-feedback">Please enter a coffee name.</div>
+    </div>
+ 
+    <!-- COF_QTY -->
+    <div class="mb-3">
+      <label class="form-label" for="cof_qty">Quantity (kg)</label>
+      <input
+        type="number"
+        class="form-control"
+        id="cof_qty"
+        name="cof_qty"
+        placeholder="0"
+        min="0"
+        step="0.5"
+        required
+      />
+      <div class="invalid-feedback">Please enter a valid quantity.</div>
+    </div>
+ 
+    <!-- COF_PRICE -->
+    <div class="mb-3">
+      <label class="form-label" for="cof_price">Price</label>
+      <div class="input-group">
+        <span class="input-group-text">$</span>
+        <input
+          type="number"
+          class="form-control"
+          id="cof_price"
+          name="cof_price"
+          placeholder="0.00"
+          min="0"
+          step="0.01"
+          required
+        />
+      </div>
+      <div class="invalid-feedback">Please enter a valid price.</div>
+    </div>
+ 
+    <!-- COF_IMAGE -->
+    <div class="mb-4">
+      <label class="form-label">Coffee Image</label>
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="cof_image" name="cof_image" accept="image/*"/>
+        <span class="upload-icon">☕</span>
+        <p><strong>Click to upload</strong> or drag & drop</p>
+        <p>PNG, JPG, WEBP — max 2 MB</p>
+      </div>
+      <img id="imagePreview" alt="Preview" />
+    </div>
+ 
+    <hr class="divider"/>
+ 
+    <div class="d-flex gap-2 justify-content-end">
+      <button type="reset" class="btn btn-reset">Reset</button>
+      <button type="submit" class="btn btn-save">Save Product</button>
+    </div>
+ 
+  </form>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $("#cof_image").change(function(e) {
+        const file = e.target.files[0]
+        const readfile = new FileReader()
+        readfile.onload = function() {
+             $("#imagePreview").show();
+            $("#imagePreview").attr("src", readfile.result)
+        }
+        readfile.readAsDataURL(file)
+    })
+</script>
