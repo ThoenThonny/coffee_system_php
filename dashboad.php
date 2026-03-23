@@ -75,7 +75,10 @@ body{
 <div class="sidebar">
     <h4>☕ Coffe System</h4>
     <a  data-page="pages/home_page.php" class="menu active">Dashboard</a>
-    <a  data-page="pages/add_page.php" class="menu">Add Product</a>
+    <?php if($_SESSION['user_role'] == 'admin'): ?>
+    <a data-page="pages/manage_product.php" class="menu">Manage Product</a>
+    <a data-page="pages/add_page.php" class="menu">Add Product</a>
+    <?php endif; ?>
     <a  data-page="pages/view_product.php" class="menu">View All Product</a>
     <a  data-page="pages/order_page.php" class="menu">Orders</a>
     <a href="logout.php" class="text-danger">Logout</a>

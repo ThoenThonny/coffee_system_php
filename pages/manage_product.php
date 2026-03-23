@@ -1,3 +1,56 @@
+<?php
+include "../config/db.php";
+session_start();
+
+if(!isset($_SESSION['user_role']) || $_SESSION['user_role'] != 'admin'){
+    echo "<h3 style='color:red'>Access Denied</h3>";
+    exit();
+}
+
+$query = "SELECT * FROM prd_coffee";
+$result = mysqli_query($conn, $query);
+?>
+
+<div class="container">
+    <h3 class="mb-4">☕ Manage Coffee Products</h3>
+
+    <table class="table table-bordered text-center">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Qty</th>
+                <th>Price ($)</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        <?php while($row = mysqli_fetch_assoc($result)): ?>
+            <tr class="align-middle">
+                <td><?= $row['cof_id'] ?></td>
+                <td>
+                    <img style="width:70px;height:70px;object-fit:cover"
+                         src="uploads/<?= $row['cof_image'] ?>">
+                </td>
+                <td><?= $row['cof_name'] ?></td>
+                <td><?= $row['cof_qty'] ?></td>
+                <td>$<?= $row['cof_price'] ?></td>
+                <td>
+                    <button  class="btn btn-warning btn-sm edit-btn" data-id="<?= $row['cof_id'] ?>">
+                        Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+        <?php endwhile; ?>
+        </tbody>
+    </table>
+</div>
+
+<!-- modal -->
+
 <style>
   :root {
     --espresso: #1a0a00;
@@ -17,8 +70,12 @@
     max-width: 820px;
     width: 100%;
     box-shadow: 0 24px 64px var(--shadow), 0 2px 8px rgba(0, 0, 0, 0.3);
-    position: relative;
     overflow: hidden;
+    position: absolute;
+    top: 50%;
+    left: 56%;
+    transform: translate(-50%,-50%);
+    display: none;
   }
 
   .form-card::before {
@@ -206,20 +263,37 @@
     right: -20px;
     pointer-events: none;
   }
+  .opacity{
+    width: 100%;
+    height: 100vh;
+    background-color: #00000059;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    cursor: pointer;
+    display: none;
+  }
 </style>
 </head>
 
 <body>
-
+    <div class="opacity"></div>
   <section class="form-card mx-auto">
     <div class="bean-deco"></div>
 
-    <h2 class="form-title">Coffee Product</h2>
-    <p class="form-subtitle">prd_coffee — Add New Entry</p>
+    <h2 class="form-title">Update Data Coffee</h2>
+    <p class="form-subtitle">prd_coffee — update your coffee</p>
 
     <form method="post" id="coffeeForm" novalidate>
 
-
+         <input
+          type="hidden"
+          class="form-control"
+          id="cof_id"
+          name="cof_id"
+          required />
+        
       <!-- COF_NAME -->
       <div class="mb-3">
         <label class="form-label" for="cof_name">Coffee Name</label>
@@ -282,7 +356,7 @@
 
       <div class="d-flex gap-2 justify-content-end">
         <button type="reset" class="btn btn-reset">Reset</button>
-        <button type="submit" class="btn btn-save">Save Product</button>
+        <button type="submit" class="btn btn-save">Update Product</button>
       </div>
 
     </form>
@@ -297,6 +371,31 @@
         $("#imagePreview").attr("src", readfile.result)
       }
       readfile.readAsDataURL(file)
+    })
+
+    // get_old_data to form modal
+    $(document).on("click",".edit-btn",function(){
+            $(".form-card").fadeIn(300)
+            $(".opacity").fadeIn(300)
+            const id = $(this).data("id");
+            $.ajax({
+                url:"products/get_product.php",
+                method: "POST",
+                data:{cof_id:id},
+                dataType:"JSON",
+                success:function(data){
+                    $("#cof_id").val(data.cof_id);
+                    $("#cof_name").val(data.cof_name);
+                    $("#cof_qty").val(data.cof_qty);
+                    $("#cof_price").val(data.cof_price);
+                    $("#imagePreview").show().attr("src","uploads/" +data.cof_image);
+                }
+            })
+    })
+
+    $(".opacity").click(function(){
+         $(".form-card").fadeOut(300)
+            $(".opacity").fadeOut(300)
     })
 
     $("#coffeeForm").submit(function(e) {
