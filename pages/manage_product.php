@@ -28,7 +28,7 @@ $result = mysqli_query($conn, $query);
 
         <tbody>
         <?php while($row = mysqli_fetch_assoc($result)): ?>
-            <tr class="align-middle">
+            <tr class="align-middle" id="row<?= $row['cof_id'] ?>">
                 <td><?= $row['cof_id'] ?></td>
                 <td>
                     <img style="width:70px;height:70px;object-fit:cover"
@@ -293,6 +293,7 @@ $result = mysqli_query($conn, $query);
           id="cof_id"
           name="cof_id"
           required />
+          <input type="hidden" name="old_image" id="old_image">
         
       <!-- COF_NAME -->
       <div class="mb-3">
@@ -385,6 +386,7 @@ $result = mysqli_query($conn, $query);
                 dataType:"JSON",
                 success:function(data){
                     $("#cof_id").val(data.cof_id);
+                    $("#old_image").val(data.cof_image);
                     $("#cof_name").val(data.cof_name);
                     $("#cof_qty").val(data.cof_qty);
                     $("#cof_price").val(data.cof_price);
@@ -403,16 +405,35 @@ $result = mysqli_query($conn, $query);
 
       const formData = new FormData(this);
       $.ajax({
-        url: "products/add.php",
+        url: "products/update_prd.php",
         method: "POST",
         data: formData,
         contentType: false,
         processData: false,
         success: function(res) {
-          if (res == 'success') {
-            alert("Add Product Already");
+          const item = JSON.parse(res);
+          if (item.status == 'success') {
+            $("#row"+item.id).html(`
+              <td>${item.id}</td>
+                <td>
+                    <img style="width:70px;height:70px;object-fit:cover"
+                         src="uploads/${item.image}">
+                </td>
+                <td>${item.name}</td>
+                <td>${item.qty}</td>
+                <td>$${item.price}</td>
+                <td>
+                    <button  class="btn btn-warning btn-sm edit-btn" data-id="<?= $row['cof_id'] ?>">
+                        Edit
+                    </button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            `)
+            alert("Update Product Already");
             $("#coffeeForm")[0].reset();
             $("#imagePreview").hide().attr("src", "");
+            $(".form-card").fadeOut(300)
+            $(".opacity").fadeOut(300)
           } else {
             alert(res);
           }
