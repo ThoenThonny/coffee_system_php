@@ -41,7 +41,9 @@ $result = mysqli_query($conn, $query);
                     <button  class="btn btn-warning btn-sm edit-btn" data-id="<?= $row['cof_id'] ?>">
                         Edit
                     </button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
+                    <button class="btn btn-danger btn-sm delete-btn" data-id="<?= $row['cof_id'] ?>">
+                      Delete
+                    </button>
                 </td>
             </tr>
         <?php endwhile; ?>
@@ -274,6 +276,18 @@ $result = mysqli_query($conn, $query);
     cursor: pointer;
     display: none;
   }
+
+  .delete-modal{
+          display:none;
+           position:absolute; 
+           top:50%; left:50%;
+            transform:translate(-50%,-50%); 
+            background:#fff; 
+            padding:25px; 
+            border-radius:15px; 
+            box-shadow:0 10px 30px rgba(0,0,0,0.3); 
+            z-index:999;
+  }
 </style>
 </head>
 
@@ -362,6 +376,18 @@ $result = mysqli_query($conn, $query);
 
     </form>
   </section>
+  
+  <div class="delete-modal">
+    <h4>⚠️ Delete Product</h4>
+    <p>Are you sure you want to delete this product?</p>
+    <input type="hidden" id="delete_id">
+
+    <div style="text-align:right;">
+        <button class="btn btn-secondary btn-sm" id="cancelDelete">Cancel</button>
+        <button class="btn btn-danger btn-sm" id="confirmDelete">Delete</button>
+    </div>
+</div>
+</body>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     $("#cof_image").change(function(e) {
@@ -423,10 +449,12 @@ $result = mysqli_query($conn, $query);
                 <td>${item.qty}</td>
                 <td>$${item.price}</td>
                 <td>
-                    <button  class="btn btn-warning btn-sm edit-btn" data-id="<?= $row['cof_id'] ?>">
+                    <button  class="btn btn-warning btn-sm edit-btn" data-id="${item.id}">
                         Edit
                     </button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
+                    <button class="btn btn-danger btn-sm delete-btn" data-id="${item.id}">
+                    Delete
+                    </button>
                 </td>
             `)
             alert("Update Product Already");
@@ -440,4 +468,40 @@ $result = mysqli_query($conn, $query);
         }
       })
     })
+
+    $(document).on("click", ".delete-btn", function(){
+    const id = $(this).data("id");
+
+    $("#delete_id").val(id);
+
+    $(".delete-modal").fadeIn(200);
+    $(".opacity").fadeIn(200);
+});
+
+$("#cancelDelete, .opacity").click(function(){
+    $(".delete-modal").fadeOut(200);
+    $(".opacity").fadeOut(200);
+});
+
+$("#confirmDelete").click(function(){
+    const id = $("#delete_id").val();
+
+    $.ajax({
+        url: "products/delete_prd.php",
+        method: "POST",
+        data: {cof_id: id},
+        success: function(res){
+            if(res == "success"){
+                $("#row"+id).remove(); // remove row only
+
+                $(".delete-modal").fadeOut(200);
+                $(".opacity").fadeOut(200);
+
+                alert("Deleted successfully");
+            }else{
+                alert(res);
+            }
+        }
+    })
+});
   </script>
