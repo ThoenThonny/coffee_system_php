@@ -19,7 +19,7 @@
                 <div class="card-body">
                     <h5 class="card-title">${item.cof_name}</h5>
                     <p class="card-text text-muted">$ ${item.cof_price}</p>
-                    <button style="background-color: #9e7a55;" class="btn w-100 text-white">Order</button>
+                    <button data-id="${item.cof_id}" style="background-color: #9e7a55;" class="btn w-100 text-white order-btn">Order</button>
                 </div>
                 </div>
             </div>`
@@ -27,4 +27,19 @@
             $("#show-allproduct").html(html);
         })
     })
+
+    $(document).on("click", ".order-btn", function(e){
+    e.preventDefault();
+
+    const btn = $(this);
+    btn.prop("disabled", true); // prevent double click
+
+    const id = btn.data("id");
+
+    $.post("orders/add_to_orders.php",{cof_id:id},function(res){
+        alert(res);
+        btn.prop("disabled", false);
+    });
+});
+    
 </script>
