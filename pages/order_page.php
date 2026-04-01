@@ -223,7 +223,7 @@
           </td>
           <td><span class="total-text"><?= number_format($total, 2) ?>$</span></td>
           
-          <td><a href="#" class="btn-remove" data-id="<?= $odr['order_id'] ?>">Remove</a></td>
+          <td><button class="btn-remove text-danger" data-id="<?= $odr['order_id'] ?>">Remove</button></td>
         </tr>
         <?php endforeach; ?>
       </tbody>
@@ -239,39 +239,37 @@
           totalpayments: <span class="total-pay"><?= number_format($total_pay, 2) ?>$</span>
         </span>
       </div>
-      <a href="#" class="btn-checkout">Checkout</a>
+      <a href="#" id="checkout-btn" class="btn-checkout">Checkout</a>
     </div>
 
   <?php endif; ?>
 </div>
-
 <script>
-  var $j = jQuery.noConflict();
-
- 
   function updateSummary() {
     let totalPay = 0;
     let itemCount = 0;
 
-    $j(".cart-table tbody tr").each(function() {
-      const qty = parseInt($j(this).find("input[type='number']").val()) || 0;
-      const price = parseFloat($j(this).find(".price-text").text().replace(/[^0-9.]/g, "")) || 0;
+    
+    $(".cart-table tbody tr").each(function() {
+      const qty = parseInt($(this).find("input[type='number']").val()) || 0;
+      const price = parseFloat($(this).find(".price-text").text().replace(/[^0-9.]/g, "")) || 0;
       totalPay += qty * price;
       itemCount += qty;
     });
 
-    $j(".item-count").text(itemCount);
-    $j(".total-pay").text(totalPay.toFixed(2) + "$");
+    $(".item-count").text(itemCount);
+    $(".total-pay").text(totalPay.toFixed(2) + "$");
   }
-  $j(document).on("click", ".plus", function(e) {
+
+  $(".cart-card").off("click", ".plus").on("click", ".plus", function(e) {
     e.preventDefault();
-    const id = $j(this).data("id");
-    const $row = $j(this).closest("tr");
+    const id = $(this).data("id");
+    const $row = $(this).closest("tr");
     const $input = $row.find("input[type='number']");
     const $total = $row.find(".total-text");
     const price = parseFloat($row.find(".price-text").text().replace(/[^0-9.]/g, ""));
 
-    $j.post("orders/update_qty.php", { order_id: id, type: "plus" }, function(res) {
+    $.post("orders/update_qty.php", { order_id: id, type: "plus" }, function(res) {
       if (res.trim() == "success") {
         let newQty = parseInt($input.val()) + 1;
         $input.val(newQty);
@@ -281,18 +279,18 @@
     });
   });
 
-  $j(document).on("click", ".minus", function(e) {
+  $(".cart-card").off("click", ".minus").on("click", ".minus", function(e) {
     e.preventDefault();
-    const id = $j(this).data("id");
-    const $row = $j(this).closest("tr");
+    const id = $(this).data("id");
+    const $row = $(this).closest("tr");
     const $input = $row.find("input[type='number']");
     const $total = $row.find(".total-text");
     const price = parseFloat($row.find(".price-text").text().replace(/[^0-9.]/g, ""));
 
     let currentQty = parseInt($input.val());
-    if (currentQty <= 1) return; 
+    if (currentQty <= 1) return;
 
-    $j.post("orders/update_qty.php", { order_id: id, type: "minus" }, function(res) {
+    $.post("orders/update_qty.php", { order_id: id, type: "minus" }, function(res) {
       if (res.trim() == "success") {
         let newQty = currentQty - 1;
         $input.val(newQty);
@@ -301,5 +299,15 @@
       }
     });
   });
-
+  $(".cart-card").off("click","btn-remove").on("click",".btn-remove",function(e){
+    e.preventDefault();
+    const id = $(this).data("id");
+    const $row = $(this).closest("tr");
+    $.post("orders/remove_item.php", {order_id: id}, function(res){
+      if(res.trim()=="success"){
+         $row.remove();
+         updateSummary();
+      }
+    })
+  })
 </script>
