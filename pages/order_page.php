@@ -239,7 +239,7 @@
           totalpayments: <span class="total-pay"><?= number_format($total_pay, 2) ?>$</span>
         </span>
       </div>
-      <a href="#" id="checkout-btn" class="btn-checkout">Checkout</a>
+      <button  id="checkout-btn" class="btn-checkout">Checkout</button>
     </div>
 
   <?php endif; ?>
@@ -299,7 +299,7 @@
       }
     });
   });
-  $(".cart-card").off("click","btn-remove").on("click",".btn-remove",function(e){
+  $(".cart-card").off("click",".btn-remove").on("click",".btn-remove",function(e){
     e.preventDefault();
     const id = $(this).data("id");
     const $row = $(this).closest("tr");
@@ -310,4 +310,22 @@
       }
     })
   })
+
+  $(".cart-card").off("click",".btn-checkout").on("click",".btn-checkout", function(e){
+    e.preventDefault();
+    if(!confirm("តើអ្នកប្រាកដថាចង់បញ្ជាទិញមែនទេ?")){
+      return;
+    }
+    $.post("orders/checkout.php", function(res){
+      if(res.trim()=="success"){
+          $(".cart-table tbody").html('');
+          $(".item-count").text("0");
+          $(".total-pay").text("0.00$");
+          alert("ការបញ្ជាទិញបានជោគជ័យ! សូមរីករាយជាមួយកាហ្វេរបស់ពួកយើង។");
+      }else{
+        alert("Error Checking out. Please try again.");
+      }
+    })
+  })
+ 
 </script>
